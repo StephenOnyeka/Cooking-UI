@@ -1,6 +1,9 @@
 import {
+  FlatList,
   Image,
+  ImageBackground,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -8,8 +11,15 @@ import {
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { EvilIcons, Ionicons } from "@expo/vector-icons";
+import { categories } from "@/constants/categories";
+import {
+  EvilIcons,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 // import { TbBellRinging } from "react-icons/tb";
 
@@ -26,7 +36,7 @@ const HomeScreen = () => {
             />
             <ThemedText> Hi Daniel 👋</ThemedText>
           </View>
-          <View className="flex justify-center items-center bg-gray-800 border border-gray-200 rounded-full p-3 h-14 w-14">
+          <View className="flex justify-center items-center bg-white/20 border border-gray-700 rounded-full p-3 h-14 w-14">
             <EvilIcons name="bell" size={25} color="white" />
           </View>
         </View>
@@ -35,7 +45,7 @@ const HomeScreen = () => {
           {/* <Input /> */}
         </View>
         <View className="mt-6 px-2">
-          <View className="flex flex-row items-center bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-3">
+          <View className="flex flex-row items-center bg-gray-100 dark:bg-white/20 rounded-full px-4 py-3">
             <EvilIcons name="search" size={24} color="white" />
             <TextInput
               placeholder="Search your home..."
@@ -43,12 +53,133 @@ const HomeScreen = () => {
               className="flex-1 ml-3 text-base text-gray-900 dark:text-white"
             />
             <TouchableOpacity className="divide-x">
-              <Ionicons name="options-outline" size={20} color="white" className="divide divide-x-white" />
+              <Ionicons
+                name="options-outline"
+                size={20}
+                color="white"
+                className="divide divide-x-white"
+              />
             </TouchableOpacity>
           </View>
         </View>
         <View>
-          <View className="border border-white size-20 rounded-full"></View>
+          <View className="mt-8 flex flex-row justify-center items-center gap-2">
+            <FlatList
+              data={categories}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ gap: 12 }}
+              renderItem={({ item }) => (
+                <View
+                  key={item.id}
+                  className="flex flex-col gap-1 items-center"
+                >
+                  <View className="bg-white/20 border border-gray-700 size-20 rounded-full flex justify-center items-center">
+                    <Image
+                      source={item.image}
+                      className={"rounded-full size-14"}
+                    />
+                  </View>
+                  <Text className="text-center text-gray-500">{item.name}</Text>
+                </View>
+              )}
+            />
+          </View>
+          <View className="py-8 flex flex-row justify-between">
+            <ThemedText className="font-semibold text-2xl">
+              Trending Recipes
+            </ThemedText>
+            <View className="flex flex-row justify-center items-center">
+              <Text className="text-gray-500 text-lg">See More </Text>
+              <MaterialIcons name="chevron-right" size={20} color="gray" />
+            </View>
+          </View>
+          {/* 
+          <View className="mb-16  border border-gray-500 rounded-3xl p-4">
+            <ImageBackground source={require('@/assets/foods/chicken-tuscan.jpg')} className="rounded-3xl" style={{ height: 200 }}>
+            <View className="flex flex-row justify-between items-center pb-4">
+              <View className="flex items-center justify-center size-14 border border-gray-500 rounded-full bg-white/20 text-red-400"><MaterialIcons name="favorite-outline" size={20} className="text-red-400" color="white" /></View>
+              <View className="flex items-center justify-center size-14 border border-gray-500 rounded-full bg-white/90"><MaterialCommunityIcons name="arrow-top-right" size={20} color="black" /></View>
+            </View>
+            <ThemedText className="text-3xl">Creamy Tuscan</ThemedText>
+            <ThemedText className="text-3xl">Chicken</ThemedText>
+            <View className="bg-white/20 p-2 mt-2 w-24 flex flex-row justify-center items-center gap-2 rounded-full">
+              <EvilIcons name="clock" size={16} color="gray" />
+              <Text className="text-gray-500">15 mins</Text>
+            </View>
+            </ImageBackground>
+          </View> */}
+
+          {/* <View className="mb-16  border border-gray-500 rounded-3xl p-4">
+            <ImageBackground source={require('@/assets/foods/chicken-tuscan.jpg')} className="mb-16  border border-gray-500 rounded-3xl p-4 bg-black/50">
+            <View className="flex flex-row justify-between items-center pb-4">
+              <View className="flex items-center justify-center size-14 border border-gray-500 rounded-full bg-white/20 text-red-400"><MaterialIcons name="favorite-outline" size={20} className="text-red-400" color="white" /></View>
+              <View className="flex items-center justify-center size-14 border border-gray-500 rounded-full bg-white/90"><MaterialCommunityIcons name="arrow-top-right" size={20} color="black" /></View>
+            </View>
+            <ThemedText className="text-3xl">Creamy Tuscan</ThemedText>
+            <ThemedText className="text-3xl">Chicken</ThemedText>
+            <View className="bg-white/20 p-2 mt-2 w-24 flex flex-row justify-center items-center gap-2 rounded-full">
+              <EvilIcons name="clock" size={16} color="gray" />
+              <Text className="text-gray-500">15 mins</Text>
+            </View>
+            </ImageBackground>
+          </View> */}
+
+
+          <View className="mb-6 overflow-hidden rounded-3xl border border-gray-500">
+            <ImageBackground
+              source={require("@/assets/foods/chicken-tuscan.jpg")}
+              className="h-64 justify-end" // Full height card
+              resizeMode="cover"
+            >
+              {/* Black Gradient Overlay (70% image → 30% fade) */}
+              <View className="absolute inset-0">
+                <LinearGradient
+                  colors={["", "rgba(0,0,0,1)"]}
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  className="h-full w-full"
+                />
+              </View>
+
+              {/* Top Icons */}
+              <View className="flex-row justify-between items-start p-4">
+                <View className="size-12 items-center justify-center rounded-full border border-gray-400 bg-white/30 backdrop-blur-sm">
+                  <MaterialIcons
+                    name="favorite-outline"
+                    size={22}
+                    color="white"
+                  />
+                </View>
+                <View className="size-12 items-center justify-center rounded-full border border-gray-400 bg-white/90">
+                  <MaterialCommunityIcons
+                    name="arrow-top-right"
+                    size={22}
+                    color="black"
+                  />
+                </View>
+              </View>
+
+              {/* Bottom Content (on gradient) */}
+              <View className="px-4 pb-6">
+                <ThemedText className="text-3xl font-bold text-white drop-shadow-md">
+                  Creamy Tuscan
+                </ThemedText>
+                <ThemedText className="text-3xl font-bold text-white drop-shadow-md">
+                  Chicken
+                </ThemedText>
+
+                <View className="mt-3 flex-row items-center gap-2 rounded-full bg-white/30 px-3 py-1.5 backdrop-blur-sm">
+                  <EvilIcons name="clock" size={18} color="white" />
+                  <Text className="text-sm font-medium text-white">
+                    15 mins
+                  </Text>
+                </View>
+              </View>
+            </ImageBackground>
+          </View>
+
         </View>
       </ThemedView>
       {/* </ScrollView> */}
