@@ -19,20 +19,29 @@ export function ThemedText({
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 // Only apply type styles if NO className is passed
-const shouldApplyTypeStyles = !className;
+const applyTypeStyles = !className;
 
   return (
     <Text
       className={className}
       style={[
         { color },
-        shouldApplyTypeStyles && type === "default" ? styles.default : undefined,
-        shouldApplyTypeStyles && type === "title" ? styles.title : undefined,
-        shouldApplyTypeStyles && type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
-        shouldApplyTypeStyles && type === "subtitle" ? styles.subtitle : undefined,
-        shouldApplyTypeStyles && type === "link" ? styles.link : undefined,
-        shouldApplyTypeStyles && style,
+        applyTypeStyles && type === "default" && styles.default,
+        applyTypeStyles && type === "defaultSemiBold" && styles.defaultSemiBold,
+        applyTypeStyles && type === "title" && styles.title,
+        applyTypeStyles && type === "subtitle" && styles.subtitle,
+        applyTypeStyles && type === "link" && styles.link,
+        style,
       ]}
+      // style={[
+      //   { color },
+      //   shouldApplyTypeStyles && type === "default" ? styles.default : undefined,
+      //   shouldApplyTypeStyles && type === "title" ? styles.title : undefined,
+      //   shouldApplyTypeStyles && type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
+      //   shouldApplyTypeStyles && type === "subtitle" ? styles.subtitle : undefined,
+      //   shouldApplyTypeStyles && type === "link" ? styles.link : undefined,
+      //   shouldApplyTypeStyles && style,
+      // ]}
       {...rest}
     />
   );
