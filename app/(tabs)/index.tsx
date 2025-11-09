@@ -15,7 +15,9 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { categories } from "@/constants/categories";
 import { foods } from "@/constants/foods";
+import { useFavorites } from "@/contexts/favorites-context";
 import { EvilIcons, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 // import { SafeAreaView } from "react-native-safe-area-context";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,11 +25,32 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { TbBellRinging } from "react-icons/tb";
 
 const HomeScreen = () => {
+  const router = useRouter();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 1000);
+  };
+
+  const filteredFoods = selectedCategory
+    ? foods.filter((food) => food.category === selectedCategory)
+    : foods;
+
+  const handleSeeMore = () => {
+    router.push({
+      pathname: "/recipes",
+      params: selectedCategory ? { category: selectedCategory } : {},
+    });
+  };
+
+  const handleRecipePress = (foodId: number) => {
+    router.push({
+      pathname: "/recipe-detail",
+      params: { id: foodId.toString() },
+    });
   };
   return (
     <SafeAreaView className="px-2">
@@ -81,11 +104,22 @@ const HomeScreen = () => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ gap: 12 }}
                 renderItem={({ item }) => (
-                  <View
+                  <TouchableOpacity
                     key={item.id}
                     className="flex flex-col gap-1 items-center"
+                    onPress={() => {
+                      setSelectedCategory(
+                        selectedCategory === item.name ? null : item.name
+                      );
+                    }}
                   >
-                    <View className="bg-white/20 border border-gray-700 size-20 rounded-full flex justify-center items-center">
+                    <View
+                      className={`size-20 rounded-full flex justify-center items-center ${
+                        selectedCategory === item.name
+                          ? "bg-white/40 border-2 border-white"
+                          : "bg-white/20 border border-gray-700"
+                      }`}
+                    >
                       <Image
                         source={item.image}
                         className={"rounded-full size-14"}
@@ -94,39 +128,33 @@ const HomeScreen = () => {
                     <Text className="text-center text-gray-500">
                       {item.name}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 )}
               />
             </View>
             <View className="py-8 flex flex-row justify-between">
-              <ThemedText className="font-semibold text-2xl">
+              <ThemedText className="text-2xl">
                 Trending Recipes
               </ThemedText>
-              <View className="flex flex-row justify-center items-center">
+              <TouchableOpacity
+                onPress={handleSeeMore}
+                className="flex flex-row justify-center items-center"
+              >
                 <Text className="text-gray-500 text-lg">See More </Text>
                 <MaterialIcons name="chevron-right" size={20} color="gray" />
-              </View>
+              </TouchableOpacity>
             </View>
 
-            {/* <FlatList
-              data={foods}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{gap: 12}}
-              renderItem={({ item }) => (
-                <RecipeCard
-                  image={item.image}
-                  title={`${item.title} \n ${item.foodName}`}
-                  time={`${item.time} mins`}
-                  />
-              )}
-            /> */}
-
-            {foods.map((item, index) => (
+            {filteredFoods.slice(0, 15).map((item, index) => (
               <RecipeCard
                 key={item.id || index}
                 image={item.image}
                 title={`${item.title}\n${item.foodName}`}
                 time={`${item.time} mins`}
+                foodId={item.id}
+                isFavorite={isFavorite(item.id)}
+                onToggleFavorite={() => toggleFavorite(item.id)}
+                onPress={() => handleRecipePress(item.id)}
               />
             ))}
           </View>

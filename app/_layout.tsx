@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import "./global.css";
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { FavoritesProvider } from '@/contexts/favorites-context';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -17,13 +18,17 @@ const RootLayout = () => {
 
   return (
     <SafeAreaProvider>
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <FavoritesProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="recipes" options={{ headerShown: false }} />
+          <Stack.Screen name="recipe-detail" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </FavoritesProvider>
     </SafeAreaProvider>
   );
 }

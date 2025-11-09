@@ -4,21 +4,29 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Image, useColorScheme, View } from "react-native";
+import { Image, TouchableOpacity, useColorScheme, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
 export function RecipeCard({
   image,
   title,
   time,
+  foodId,
+  isFavorite = false,
+  onToggleFavorite,
+  onPress,
 }: {
   image: any;
   title: string;
   time: string;
+  foodId?: number;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
+  onPress?: () => void;
 }) {
   const [line1, line2] = title.split("\n");
   const colorScheme = useColorScheme(); // 'light' | 'dark'
-//   const heartColor = colorScheme === "dark" ? "white" : "#ef4444";
+  //   const heartColor = colorScheme === "dark" ? "white" : "#ef4444";
   const heartColor = colorScheme === "dark" ? "white" : "orange";
 
   // Dynamic gradient based on theme
@@ -53,25 +61,47 @@ export function RecipeCard({
 
         {/* Top Icons (on image side) */}
         <View className="flex flex-row justify-between p-2 px-4">
-          <View className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/30 backdrop-blur-sm">
-            <MaterialIcons name="favorite-outline" size={20} color={heartColor} />
-          </View>
-          <View className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/90">
+          <TouchableOpacity
+            onPress={onToggleFavorite}
+            className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/30 backdrop-blur-sm"
+            disabled={!onToggleFavorite}
+          >
+            <MaterialIcons
+              name={isFavorite ? "favorite" : "favorite-outline"}
+              size={20}
+              color={heartColor}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={onPress}
+            className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/90"
+            disabled={!onPress}
+          >
             <MaterialCommunityIcons
               name="arrow-top-right"
               size={20}
               color="black"
             />
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Text Content (on left, over black fade) */}
         {/* <View className="absolute left-0 top-0 h-full justify-center pl-6"> */}
         <View className="mt-2 px-4">
-          <ThemedText className="text-3xl font-bold text-white drop-shadow-lg">
+          <ThemedText
+            className="text-3xl text-white drop-shadow-lg"
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}
+          >
             {line1}
           </ThemedText>
-          <ThemedText className="text-3xl font-bold text-white drop-shadow-lg">
+          <ThemedText
+            className="text-3xl text-white drop-shadow-lg"
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}
+          >
             {line2}
           </ThemedText>
 
