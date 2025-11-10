@@ -14,6 +14,7 @@ import { useFavorites } from "@/contexts/favorites-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
+import { useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RecipesScreen = () => {
@@ -21,6 +22,7 @@ const RecipesScreen = () => {
   const { category } = useLocalSearchParams<{ category?: string }>();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
+  const colorScheme = useColorScheme();
 
   const handleRecipePress = (foodId: number) => {
     router.push({
@@ -37,26 +39,30 @@ const RecipesScreen = () => {
   const filteredFoods = category
     ? foods.filter((food) => food.category === category)
     : foods;
+  const iconColor = colorScheme === "dark" ? "white" : "black";
+  const buttonBgColor =
+    colorScheme === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.7)";
 
   return (
-    <SafeAreaView className="px-2">
+    <SafeAreaView>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <ThemedView>
+        <ThemedView className="px-2">
           {/* Header */}
-          <View className="flex flex-row items-center py-4">
+          <View className="gap-2 py-4">
             <TouchableOpacity
               onPress={() => router.back()}
-              className="mr-4 flex justify-center items-center bg-white/20 border border-gray-700 rounded-full p-2 h-10 w-10"
+              className="flex flex-row  gap-2 items-center rounded-full backdrop-blur-sm"
+              style={{ backgroundColor: buttonBgColor }}
             >
-              <MaterialIcons name="arrow-back" size={24} color="white" />
+              <MaterialIcons name="chevron-left" size={24} color={iconColor} />
+              <ThemedText className="text-2xl font-medium">
+                {category ? `${category} Recipes` : "All Recipes"}
+              </ThemedText>{" "}
             </TouchableOpacity>
-            <ThemedText className="text-3xl font-semibold">
-              {category ? `${category} Recipes` : "All Recipes"}
-            </ThemedText>
           </View>
 
           {/* Recipes List */}

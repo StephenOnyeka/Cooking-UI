@@ -30,7 +30,8 @@ const HomeScreen = () => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const colorScheme = useColorScheme(); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
   const onRefresh = () => {
@@ -38,9 +39,22 @@ const HomeScreen = () => {
     setTimeout(() => setRefreshing(false), 1000);
   };
 
-  const filteredFoods = selectedCategory
-    ? foods.filter((food) => food.category === selectedCategory)
-    : foods;
+  // Filter foods based on category and search query
+  const filteredFoods = foods.filter((food) => {
+    // Category filter
+    const matchesCategory =
+      !selectedCategory || food.category === selectedCategory;
+
+    // Search filter - search in title, foodName, description, and category
+    const matchesSearch =
+      !searchQuery.trim() ||
+      food.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      food.foodName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      food.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      food.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
 
   const handleSeeMore = () => {
     router.push({
@@ -73,7 +87,11 @@ const HomeScreen = () => {
               <ThemedText> Hi Daniel 👋</ThemedText>
             </View>
             <View className="flex justify-center items-center bg-white/20 border border-gray-700 rounded-full p-3 h-14 w-14">
-              <EvilIcons name="bell" size={25} color={isDark ? "white": "black"} />
+              <EvilIcons
+                name="bell"
+                size={25}
+                color={isDark ? "white" : "black"}
+              />
             </View>
           </View>
           <View className="mt-4 mb-2">
@@ -82,17 +100,36 @@ const HomeScreen = () => {
           </View>
           <View className="mt-6 px-2">
             <View className="flex flex-row items-center bg-gray-100 dark:bg-white/20 rounded-full px-4 py-3">
-              <EvilIcons name="search" size={24} color={isDark ? "white": "gray"}  />
+              <EvilIcons
+                name="search"
+                size={24}
+                color={isDark ? "white" : "gray"}
+              />
               <TextInput
-                placeholder="Search your home..."
+                placeholder="Search recipes..."
                 placeholderTextColor="gray"
                 className="flex-1 ml-3 text-base text-gray-900 dark:text-white"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                returnKeyType="search"
               />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => setSearchQuery("")}
+                  className="mr-2"
+                >
+                  <Ionicons
+                    name="close-circle"
+                    size={20}
+                    color={isDark ? "white" : "gray"}
+                  />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity className="divide-x">
                 <Ionicons
                   name="options-outline"
                   size={20}
-                  color={isDark ? "white": "gray"} 
+                  color={isDark ? "white" : "gray"}
                   className="divide divide-x-white"
                 />
               </TouchableOpacity>
@@ -137,28 +174,44 @@ const HomeScreen = () => {
               />
             </View>
             <View className="py-8 flex flex-row justify-between">
-              <ThemedText className="text-2xl font-medium">Trending Recipes</ThemedText>
-              <TouchableOpacity
-                onPress={handleSeeMore}
-                className="flex flex-row justify-center items-center"
-              >
-                <Text className="text-gray-500 text-lg">See More </Text>
-                <MaterialIcons name="chevron-right" size={20} color="gray" />
-              </TouchableOpacity>
+              <ThemedText className="text-2xl font-medium">
+                {searchQuery
+                  ? `Search Results (${filteredFoods.length})`
+                  : "Trending Recipes"}
+              </ThemedText>
+              {!searchQuery && (
+                <TouchableOpacity
+                  onPress={handleSeeMore}
+                  className="flex flex-row justify-center items-center"
+                >
+                  <Text className="text-gray-500 text-lg">See More </Text>
+                  <MaterialIcons name="chevron-right" size={20} color="gray" />
+                </TouchableOpacity>
+              )}
             </View>
             {/* <View className="pb-32 bg-red-500"> */}
-            {filteredFoods.slice(0, 15).map((item, index) => (
-              <RecipeCard
-                key={item.id || index}
-                image={item.image}
-                title={`${item.title}\n${item.foodName}`}
-                time={`${item.time} mins`}
-                foodId={item.id}
-                isFavorite={isFavorite(item.id)}
-                onToggleFavorite={() => toggleFavorite(item.id)}
-                onPress={() => handleRecipePress(item.id)}
-              />
-            ))}
+            {filteredFoods.length > 0 ? (
+              filteredFoods
+                .slice(0, 15)
+                .map((item, index) => (
+                  <RecipeCard
+                    key={item.id || index}
+                    image={item.image}
+                    title={`${item.title}\n${item.foodName}`}
+                    time={`${item.time} mins`}
+                    foodId={item.id}
+                    isFavorite={isFavorite(item.id)}
+                    onToggleFavorite={() => toggleFavorite(item.id)}
+                    onPress={() => handleRecipePress(item.id)}
+                  />
+                ))
+            ) : (
+              <View className="flex items-center justify-center py-20">
+                <ThemedText className="text-xl text-gray-500">
+                  No recipes found. Try a different search.
+                </ThemedText>
+              </View>
+            )}
             {/* </View> */}
           </View>
         </ThemedView>
