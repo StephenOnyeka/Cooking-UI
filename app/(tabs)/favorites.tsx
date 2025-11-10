@@ -34,16 +34,16 @@ const FavoritesScreen = () => {
   const favoriteFoods = getFavoriteFoods(foods);
 
   return (
-    <SafeAreaView className="px-2">
+    <SafeAreaView>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <ThemedView>
+        <ThemedView className="px-4 h-full">
           {/* Header */}
           <View className="flex flex-row items-center py-4">
-            <ThemedText className="text-3xl font-semibold">
+            <ThemedText className="text-2xl font-medium">
               My Favorites
             </ThemedText>
           </View>

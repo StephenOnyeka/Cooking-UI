@@ -7,6 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 
@@ -29,6 +30,8 @@ const HomeScreen = () => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const colorScheme = useColorScheme(); 
+  const isDark = colorScheme === "dark";
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -53,13 +56,14 @@ const HomeScreen = () => {
     });
   };
   return (
-    <SafeAreaView className="px-2">
+    <SafeAreaView>
       <ScrollView
+        // className="mb-10"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <ThemedView>
+        <ThemedView className="px-4 pb-10">
           <View className="flex flex-row justify-between items-center py-4">
             <View className="flex flex-row items-center gap-2">
               <Image
@@ -69,7 +73,7 @@ const HomeScreen = () => {
               <ThemedText> Hi Daniel 👋</ThemedText>
             </View>
             <View className="flex justify-center items-center bg-white/20 border border-gray-700 rounded-full p-3 h-14 w-14">
-              <EvilIcons name="bell" size={25} color="white" />
+              <EvilIcons name="bell" size={25} color={isDark ? "white": "black"} />
             </View>
           </View>
           <View className="mt-4 mb-2">
@@ -78,7 +82,7 @@ const HomeScreen = () => {
           </View>
           <View className="mt-6 px-2">
             <View className="flex flex-row items-center bg-gray-100 dark:bg-white/20 rounded-full px-4 py-3">
-              <EvilIcons name="search" size={24} color="white" />
+              <EvilIcons name="search" size={24} color={isDark ? "white": "gray"}  />
               <TextInput
                 placeholder="Search your home..."
                 placeholderTextColor="gray"
@@ -88,7 +92,7 @@ const HomeScreen = () => {
                 <Ionicons
                   name="options-outline"
                   size={20}
-                  color="white"
+                  color={isDark ? "white": "gray"} 
                   className="divide divide-x-white"
                 />
               </TouchableOpacity>
@@ -116,8 +120,8 @@ const HomeScreen = () => {
                     <View
                       className={`size-20 rounded-full flex justify-center items-center ${
                         selectedCategory === item.name
-                          ? "bg-white/40 border-2 border-white"
-                          : "bg-white/20 border border-gray-700"
+                          ? "bg-gray-100 dark:bg-white/40 border-2 border-white"
+                          : " bg-gray-100 dark:bg-white/20 border border-gray-400 dark:border-gray-700"
                       }`}
                     >
                       <Image
@@ -133,9 +137,7 @@ const HomeScreen = () => {
               />
             </View>
             <View className="py-8 flex flex-row justify-between">
-              <ThemedText className="text-2xl">
-                Trending Recipes
-              </ThemedText>
+              <ThemedText className="text-2xl font-medium">Trending Recipes</ThemedText>
               <TouchableOpacity
                 onPress={handleSeeMore}
                 className="flex flex-row justify-center items-center"
@@ -144,7 +146,7 @@ const HomeScreen = () => {
                 <MaterialIcons name="chevron-right" size={20} color="gray" />
               </TouchableOpacity>
             </View>
-
+            {/* <View className="pb-32 bg-red-500"> */}
             {filteredFoods.slice(0, 15).map((item, index) => (
               <RecipeCard
                 key={item.id || index}
@@ -157,6 +159,7 @@ const HomeScreen = () => {
                 onPress={() => handleRecipePress(item.id)}
               />
             ))}
+            {/* </View> */}
           </View>
         </ThemedView>
       </ScrollView>

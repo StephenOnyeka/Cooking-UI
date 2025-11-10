@@ -27,7 +27,8 @@ export function RecipeCard({
   const [line1, line2] = title.split("\n");
   const colorScheme = useColorScheme(); // 'light' | 'dark'
   //   const heartColor = colorScheme === "dark" ? "white" : "#ef4444";
-  const heartColor = colorScheme === "dark" ? "white" : "orange";
+  const isDark= colorScheme === "dark";
+  const heartColor = colorScheme === "dark" ? "white" : "#f97316";
 
   // Dynamic gradient based on theme
   const gradientColors =
@@ -63,7 +64,7 @@ export function RecipeCard({
         <View className="flex flex-row justify-between p-2 px-4">
           <TouchableOpacity
             onPress={onToggleFavorite}
-            className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/30 backdrop-blur-sm"
+            className="size-14 items-center justify-center rounded-full border border-gray-300 dark:border-gray-600 bg-white/30 backdrop-blur-sm"
             disabled={!onToggleFavorite}
           >
             <MaterialIcons
@@ -74,7 +75,7 @@ export function RecipeCard({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onPress}
-            className="size-14 items-center justify-center rounded-full border border-gray-400 bg-white/90"
+            className="size-14 items-center justify-center rounded-full border border-gray-300 bg-white/90"
             disabled={!onPress}
           >
             <MaterialCommunityIcons
@@ -106,7 +107,7 @@ export function RecipeCard({
           </ThemedText>
 
           <View className="flex flex-row items-center justify-center gap-2 rounded-full bg-gray-100 dark:bg-white/30 px-3 py-1.5 mt-2 backdrop-blur-sm border border-gray-300 dark:border-gray-600 w-24">
-            <EvilIcons name="clock" size={18} color="white dark:black" />
+            <EvilIcons name="clock" size={18} color={isDark ? "white": "black"}  />
             <ThemedText className="text-sm font-medium text-white">
               {time}
             </ThemedText>
