@@ -10,7 +10,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { FavoritesProvider } from '@/contexts/favorites-context';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  // anchor: '(tabs)',
+  initialRouteName: 'onboarding',
 };
 
 const RootLayout = () => {
@@ -21,6 +22,7 @@ const RootLayout = () => {
     <FavoritesProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="recipes" options={{ headerShown: false }} />
           <Stack.Screen name="recipe-detail" options={{ headerShown: false }} />
